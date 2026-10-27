@@ -1,6 +1,6 @@
 {
   "name": "aktar-obsidian",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Keep your Obsidian attachments in your own S3, R2 or B2 bucket, on desktop and mobile.",
   "license": "MIT",

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.2
+
+### Changed
+
+- **Signed release files:** `main.js`, `manifest.json` and `styles.css` come with a GitHub artifact attestation, so anyone can check they were built from this repository: `gh attestation verify main.js -R getaktar/obsidian`.
+- The README says why the plugin lists the vault's files and when it uses the clipboard.
+
+### Fixed
+
+- The backup setting names the vault's own configuration folder, not always `.obsidian`.
+- Changes from the Obsidian directory's review: element checks that hold across Obsidian's windows (`instanceOf`), window timers, typed values from storage and front matter, and no control characters or needless escapes in regular expressions.
+
 ## 0.2.1
 
 ### Fixed
