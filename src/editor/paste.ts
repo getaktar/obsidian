@@ -45,7 +45,7 @@ function readyDestination(plugin: AktarPlugin) {
 export async function uploadIntoEditor(plugin: AktarPlugin, files: File[], editor: Editor, notePath: string, at?: { line: number; ch: number }): Promise<void> {
   const destination = readyDestination(plugin);
   if (!destination) return;
-  const entries = files.map((file) => ({ file, id: globalThis.crypto.randomUUID(), filename: pastedName(file) }));
+  const entries = files.map((file) => ({ file, id: crypto.randomUUID(), filename: pastedName(file) }));
   const markup = entries.map((e) => placeholderMarkup(e.id, e.filename, t('Uploading'))).join('\n');
   if (at) editor.replaceRange(markup, at);
   else editor.replaceSelection(markup);

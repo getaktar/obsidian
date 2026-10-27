@@ -86,7 +86,7 @@ type NodeHttp = {
 
 /** Node's http module, only where Obsidian has Node (desktop). */
 export function nodeHttp(): NodeHttp | null {
-  const load = (globalThis as { require?: (name: string) => unknown }).require;
+  const load = typeof window === 'undefined' ? undefined : (window as unknown as { require?: (name: string) => unknown }).require;
   try {
     return (load?.('http') as NodeHttp | undefined) ?? null;
   } catch {
@@ -132,7 +132,7 @@ export class AppClient {
   }
 
   private async hello(): Promise<void> {
-    const nonce = bytesToHex(globalThis.crypto.getRandomValues(new Uint8Array(32)));
+    const nonce = bytesToHex(crypto.getRandomValues(new Uint8Array(32)));
     let reply: { app?: unknown; proof?: unknown };
     try {
       reply = await this.request('GET', 'hello', { query: { nonce }, anonymous: true });

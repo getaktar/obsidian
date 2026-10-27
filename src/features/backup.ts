@@ -43,7 +43,7 @@ export class VaultBackup {
   }
 
   get lastBackup(): { at: number; bytes: number } | null {
-    const raw = this.plugin.app.loadLocalStorage(LAST_BACKUP_KEY);
+    const raw: unknown = this.plugin.app.loadLocalStorage(LAST_BACKUP_KEY);
     try {
       const parsed = typeof raw === 'string' ? (JSON.parse(raw) as { at?: number; bytes?: number }) : null;
       return parsed && typeof parsed.at === 'number' ? { at: parsed.at, bytes: parsed.bytes ?? 0 } : null;
@@ -101,7 +101,7 @@ export class VaultBackup {
       onProgress?.(t('Compressing…'));
       const archive = await new Promise<Uint8Array>((resolve, reject) => zip(files, { level: 6 }, (error, data) => (error ? reject(error) : resolve(data))));
       const vault = this.plugin.app.vault.getName();
-      const key = backupKey(vault, new Date(), (n) => globalThis.crypto.getRandomValues(new Uint8Array(n)));
+      const key = backupKey(vault, new Date(), (n) => crypto.getRandomValues(new Uint8Array(n)));
       onProgress?.(t('Uploading {0}…', formatBytes(archive.byteLength)));
       const written = await storage.upload(key, archive.buffer as ArrayBuffer, { contentType: 'application/zip' });
       this.plugin.app.saveLocalStorage(LAST_BACKUP_KEY, JSON.stringify({ at: Date.now(), bytes: archive.byteLength }));

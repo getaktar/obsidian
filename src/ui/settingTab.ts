@@ -72,7 +72,7 @@ export class AktarSettingTab extends PluginSettingTab {
         .addText((text) => {
           text.inputEl.type = 'password';
           text.setPlaceholder(t('Token'));
-          text.inputEl.addEventListener('change', async () => {
+          const save = async () => {
             const token = text.getValue().trim();
             if (!/^[0-9a-f]{32,128}$/i.test(token)) {
               new Notice(t('That doesn’t look like an Aktar token.'));
@@ -80,7 +80,8 @@ export class AktarSettingTab extends PluginSettingTab {
             }
             const result = await bridge.save(token);
             if (result.kind !== 'connected') new Notice(bridge.describe());
-          });
+          };
+          text.inputEl.addEventListener('change', () => void save());
         });
     } else {
       connection.addExtraButton((button) => button.setIcon('refresh-cw').setTooltip(t('Check again')).onClick(() => void bridge.refresh()));
@@ -401,7 +402,7 @@ export class AktarSettingTab extends PluginSettingTab {
         });
       new Setting(containerEl)
         .setName(t('Include settings and plugins'))
-        .setDesc(t('The .obsidian folder. Other plugins may keep passwords or keys in their settings, so this is off unless you turn it on.'))
+        .setDesc(t('The {0} folder. Other plugins may keep passwords or keys in their settings, so this is off unless you turn it on.', this.app.vault.configDir))
         .addToggle((toggle) =>
           toggle.setValue(settings.backupIncludeConfig).onChange(async (value) => {
             settings.backupIncludeConfig = value;
@@ -412,12 +413,15 @@ export class AktarSettingTab extends PluginSettingTab {
     const last = backup.lastBackup;
     const now = new Setting(containerEl)
       .setName(t('Back up now'))
-      .setDesc(last ? t('Last backup from this device: {0}, {1}.', new Date(last.at).toLocaleString(), formatBytes(last.bytes)) : t('No backup from this device yet.'))
+      .setDesc(last ? t('Last backup from this device: {0}, {1}.', new Date(last.at).toLocaleString(), formatBytes(last.bytes)) : t('No backup from this device yet.'));
+    now
       .addButton((button) =>
         button.setButtonText(t('Back up now')).onClick(async () => {
           button.setDisabled(true);
           try {
-            const result = await backup.run((text) => now.setDesc(text));
+            const result = await backup.run((text) => {
+              now.setDesc(text);
+            });
             new Notice(t('The vault is backed up: {0} files, {1}.', result.files, formatBytes(result.bytes)));
           } catch (error) {
             new Notice(t('The vault backup failed: {0}', errorMessage(error)), 10_000);

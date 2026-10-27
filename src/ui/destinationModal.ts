@@ -41,7 +41,7 @@ export class DestinationModal extends Modal {
     this.draft = existing
       ? { ...existing }
       : {
-          id: globalThis.crypto.randomUUID().toUpperCase(),
+          id: crypto.randomUUID().toUpperCase(),
           name: '',
           preset: 'cloudflareR2',
           accountID: '',

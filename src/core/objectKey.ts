@@ -18,7 +18,15 @@ export interface VaultContext {
   noteFolder: string;
 }
 
-const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/g;
+/** Without control characters (U+0000 to U+001F and U+007F). */
+export function withoutControlCharacters(text: string): string {
+  return Array.from(text)
+    .filter((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code > 0x1f && code !== 0x7f;
+    })
+    .join('');
+}
 
 /**
  * A name as it may go into a generated key: no slashes, backslashes or
@@ -26,7 +34,7 @@ const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/g;
  * template's path. A name left empty, "." or ".." is "file".
  */
 export function sanitizeFilename(name: string): string {
-  const cleaned = name.replace(/[/\\]/g, '').replace(CONTROL_CHARACTERS, '').trim();
+  const cleaned = withoutControlCharacters(name.replace(/[/\\]/g, '')).trim();
   return cleaned === '' || cleaned === '.' || cleaned === '..' ? 'file' : cleaned;
 }
 
@@ -34,7 +42,7 @@ export function sanitizeFilename(name: string): string {
 function sanitizeFolder(folder: string): string {
   return folder
     .split('/')
-    .map((segment) => segment.replace(CONTROL_CHARACTERS, '').trim())
+    .map((segment) => withoutControlCharacters(segment).trim())
     .filter((segment) => segment !== '' && segment !== '.' && segment !== '..')
     .join('/');
 }
@@ -46,8 +54,7 @@ function sanitizeFolder(folder: string): string {
  */
 export function invalidKeyReason(key: string): string | null {
   const segments = key.replace(/\/$/, '').split('/');
-  CONTROL_CHARACTERS.lastIndex = 0;
-  if (key.startsWith('/') || CONTROL_CHARACTERS.test(key) || segments.some((s) => s === '' || s === '.' || s === '..')) {
+  if (key.startsWith('/') || withoutControlCharacters(key) !== key || segments.some((s) => s === '' || s === '.' || s === '..')) {
     return 'invalid';
   }
   return null;
@@ -62,7 +69,7 @@ export interface KeyOptions {
 }
 
 function randomHex(length: number): string {
-  const bytes = globalThis.crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
+  const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').slice(0, length);
 }
 
@@ -101,7 +108,7 @@ export function generateObjectKey(template: string, originalFilename: string, op
     ['{noteFolder}', sanitizeFolder(vault?.noteFolder ?? '')],
     ['{note}', vault ? sanitizeFilename(vault.note) : ''],
     ['{filename}', deletingPathExtension(filename)],
-    ['{uuid}', globalThis.crypto.randomUUID().toLowerCase()],
+    ['{uuid}', crypto.randomUUID().toLowerCase()],
     ['{random}', randomHex(8)],
     ['{short}', short],
     ['{ext}', pathExtension(filename).toLowerCase()],

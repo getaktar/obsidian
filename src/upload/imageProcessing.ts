@@ -61,7 +61,7 @@ function encode(canvas: HTMLCanvasElement, type: string, quality: number): Promi
 
 function supportsWebP(): Promise<boolean> {
   if (!webpSupport) {
-    const canvas = document.createElement('canvas');
+    const canvas = createEl('canvas');
     canvas.width = canvas.height = 1;
     webpSupport = encode(canvas, 'image/webp', 80).then((blob) => blob?.type === 'image/webp');
   }
@@ -83,7 +83,7 @@ export async function processImage(data: ArrayBuffer, filename: string, mime: st
   try {
     const size = targetSize(bitmap.width, bitmap.height, settings.maxEdge);
     const type = outputType(filename, settings, await supportsWebP());
-    const canvas = document.createElement('canvas');
+    const canvas = createEl('canvas');
     canvas.width = size.width;
     canvas.height = size.height;
     const context = canvas.getContext('2d');

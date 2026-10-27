@@ -5,6 +5,7 @@
  */
 import assert from 'node:assert/strict';
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
+import { once } from 'node:events';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -15,6 +16,9 @@ import type { DestinationConfig, StorageCredentials } from '../src/core/types.ts
 import { MULTIPART_THRESHOLD, S3Client, type HttpClient } from '../src/s3/client.ts';
 import { signRequest, EMPTY_PAYLOAD_HASH } from '../src/s3/sigv4.ts';
 import { uploadFile } from '../src/upload/uploader.ts';
+
+// The client uses Obsidian's window timers; in Obsidian `window` is the global object, so it is here too.
+(globalThis as { window?: unknown }).window ??= globalThis;
 
 const hasMinio = spawnSync('which', ['minio']).status === 0;
 const credentials: StorageCredentials = { accessKeyId: 'minioadmin', secretAccessKey: 'minioadmin' };
@@ -76,8 +80,13 @@ before(async () => {
   client = new S3Client(destination, credentials, fetchHttp);
 });
 
-after(() => {
-  minio?.kill();
+after(async () => {
+  // MinIO may still be writing as it stops, so its folder goes once it has exited.
+  if (minio && minio.exitCode === null) {
+    const exited = once(minio, 'exit');
+    minio.kill();
+    await exited;
+  }
   if (dataDir) rmSync(dataDir, { recursive: true, force: true });
 });
 

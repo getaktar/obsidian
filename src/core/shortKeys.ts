@@ -8,7 +8,7 @@ import { StorageError, type ProviderPreset } from './types.ts';
 export const SHORT_CODE_LENGTH = 7;
 export const SHORT_CODE_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-const secureRandomBytes = (count: number) => globalThis.crypto.getRandomValues(new Uint8Array(count));
+const secureRandomBytes = (count: number) => crypto.getRandomValues(new Uint8Array(count));
 
 export function makeShortCode(randomBytes: (count: number) => Uint8Array = secureRandomBytes): string {
   let code = '';

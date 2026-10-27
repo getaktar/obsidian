@@ -181,7 +181,7 @@ export class LibraryView extends ItemView {
         const name = row.querySelector('.aktar-row-name')?.textContent?.toLowerCase() ?? '';
         const detail = row.querySelector('.aktar-row-detail')?.textContent?.toLowerCase() ?? '';
         const query = this.filter.toLowerCase();
-        row.toggleClass('aktar-hidden', Boolean(query) && !name.includes(query) && !detail.includes(query));
+        row.toggle(!query || name.includes(query) || detail.includes(query));
       });
     });
   }

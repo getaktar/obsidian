@@ -3,6 +3,8 @@
  * tested: where a backup goes, when the next one is due, which old ones go.
  */
 
+import { withoutControlCharacters } from './objectKey.ts';
+
 export type BackupInterval = 'daily' | 'weekly';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -10,7 +12,7 @@ const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 /** Outside this vault's upload folder, so "unused files" never lists them. */
 export function backupFolder(vault: string): string {
-  const name = vault.replace(/[/\\\u0000-\u001f\u007f]/g, '').trim() || 'vault';
+  const name = withoutControlCharacters(vault.replace(/[/\\]/g, '')).trim() || 'vault';
   return `backups/obsidian/${name}/`;
 }
 

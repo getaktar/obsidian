@@ -72,8 +72,8 @@ export interface LocalReference extends TextRange {
   caption: string | null;
 }
 
-const WIKI_LINK = /(!?)\[\[([^\[\]|#^\n]+)(#[^\[\]|\n]*)?(?:\|([^\[\]\n]*))?\]\]/g;
-const MARKDOWN_LINK = /(!?)\[((?:\\.|[^\[\]\\\n])*)\]\(\s*(<[^<>\n]+>|[^\s()<>]+(?:\([^\s()<>]*\)[^\s()<>]*)*)(\s+(?:"[^"\n]*"|'[^'\n]*'))?\s*\)/g;
+const WIKI_LINK = /(!?)\[\[([^[\]|#^\n]+)(#[^[\]|\n]*)?(?:\|([^[\]\n]*))?\]\]/g;
+const MARKDOWN_LINK = /(!?)\[((?:\\.|[^[\]\\\n])*)\]\(\s*(<[^<>\n]+>|[^\s()<>]+(?:\([^\s()<>]*\)[^\s()<>]*)*)(\s+(?:"[^"\n]*"|'[^'\n]*'))?\s*\)/g;
 const SIZE = /^\d+(x\d+)?$/;
 const URL_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
@@ -185,7 +185,7 @@ export function matchRemoteURL(url: string, matchers: LinkMatcher[]): { destinat
   return null;
 }
 
-const BARE_URL = /https?:\/\/[^\s<>()\[\]"'`]+/g;
+const BARE_URL = /https?:\/\/[^\s<>()[\]"'`]+/g;
 
 /** Every link in the text to a file in one of the destinations, markdown or bare. */
 export function findRemoteLinks(text: string, matchers: LinkMatcher[], options: { includeCode?: boolean } = {}): RemoteLink[] {

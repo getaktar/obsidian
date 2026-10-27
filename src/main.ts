@@ -132,9 +132,9 @@ export default class AktarPlugin extends Plugin {
   }
 
   private loadDeviceId(): string {
-    const stored = this.app.loadLocalStorage('aktar-device-id');
+    const stored: unknown = this.app.loadLocalStorage('aktar-device-id');
     if (typeof stored === 'string' && stored) return stored;
-    const id = globalThis.crypto.randomUUID();
+    const id = crypto.randomUUID();
     this.app.saveLocalStorage('aktar-device-id', id);
     return id;
   }
@@ -276,8 +276,8 @@ export default class AktarPlugin extends Plugin {
   private async readMoves(): Promise<MoveRecord[][]> {
     try {
       if (!(await this.app.vault.adapter.exists(this.movesPath))) return [];
-      const parsed = JSON.parse(await this.app.vault.adapter.read(this.movesPath));
-      return Array.isArray(parsed) ? parsed : [];
+      const parsed: unknown = JSON.parse(await this.app.vault.adapter.read(this.movesPath));
+      return Array.isArray(parsed) ? (parsed as MoveRecord[][]) : [];
     } catch {
       return [];
     }
@@ -411,8 +411,7 @@ export default class AktarPlugin extends Plugin {
 
   /** The system file picker (Files on iOS, the document picker on Android), then the usual upload. */
   pickAndUpload(editor: Editor, notePath: string): void {
-    const input = document.createElement('input');
-    input.type = 'file';
+    const input = createEl('input', { type: 'file' });
     input.multiple = true;
     input.addEventListener('change', () => {
       const files = Array.from(input.files ?? []);

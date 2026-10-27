@@ -34,7 +34,7 @@ function publishingStorage(plugin: AktarPlugin, destination: DestinationConfig):
 
 /** Where the note is published, if it is: its key in the default destination. */
 function publishedKey(plugin: AktarPlugin, note: TFile): { destinationId: string; key: string } | null {
-  const value = plugin.app.metadataCache.getFileCache(note)?.frontmatter?.[PUBLISHED_PROPERTY];
+  const value: unknown = plugin.app.metadataCache.getFileCache(note)?.frontmatter?.[PUBLISHED_PROPERTY];
   return typeof value === 'string' ? matchRemoteURL(value, plugin.matchers()) : null;
 }
 
@@ -128,7 +128,7 @@ export async function publishNote(plugin: AktarPlugin, note: TFile, mode: 'perma
       : `published/${slug(plugin.app.vault.getName())}/${slug(note.basename)}-${makeShortCode()}.html`;
   const html = await renderPage(plugin, note, storage, destination, signed);
   const bytes = new TextEncoder().encode(html);
-  await storage.upload(key, bytes.buffer as ArrayBuffer, { contentType: 'text/html; charset=utf-8', inline: true });
+  await storage.upload(key, bytes.buffer, { contentType: 'text/html; charset=utf-8', inline: true });
   const publicURL = storage.publicURL(key);
   await plugin.app.fileManager.processFrontMatter(note, (frontmatter: Record<string, unknown>) => {
     frontmatter[PUBLISHED_PROPERTY] = publicURL;

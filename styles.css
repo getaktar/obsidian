@@ -45,10 +45,6 @@
   flex-shrink: 0;
 }
 
-.aktar-hidden {
-  display: none !important;
-}
-
 /* Settings */
 
 .aktar-settings .aktar-wide-input {

@@ -124,12 +124,12 @@ export class AppBridge {
 
   /** The connection `aktar login` saved for the CLI, if there is one on this computer. */
   async cliConnection(): Promise<{ token: string; port: number } | null> {
-    const load = (globalThis as { require?: (name: string) => unknown }).require;
+    const load = (window as unknown as { require?: (name: string) => unknown }).require;
     try {
       const fs = load?.('fs') as { promises: { readFile(path: string, encoding: string): Promise<string> } };
       const os = load?.('os') as { homedir(): string };
       const path = load?.('path') as { join(...parts: string[]): string };
-      const process = (globalThis as { process?: { platform: string; env: Record<string, string | undefined> } }).process;
+      const process = (window as unknown as { process?: { platform: string; env: Record<string, string | undefined> } }).process;
       if (!fs || !os || !path || !process) return null;
       const file =
         process.platform === 'win32'

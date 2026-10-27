@@ -81,7 +81,7 @@ export function parseTransferLink(input: string): Uint8Array {
 }
 
 async function aesGcmOpen(key: Uint8Array, nonce: Uint8Array, sealed: Uint8Array): Promise<Uint8Array> {
-  const subtle = globalThis.crypto.subtle;
+  const subtle = crypto.subtle;
   const cryptoKey = await subtle.importKey('raw', key as BufferSource, 'AES-GCM', false, ['decrypt']);
   const plaintext = await subtle.decrypt(
     { name: 'AES-GCM', iv: nonce as BufferSource, additionalData: AAD as BufferSource, tagLength: 128 },

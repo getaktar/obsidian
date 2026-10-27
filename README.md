@@ -42,6 +42,13 @@ Moved attachments get keys that only depend on the file, so two synced devices m
 
 The plugin connects only to the storage endpoints and public URLs of the destinations you add, and on desktop to the Aktar app on `127.0.0.1` when you pair with it. It collects no data and sends no telemetry.
 
+## Vault and clipboard access
+
+- **Listing the vault's files:** moving attachments has to know which notes link which file, the library shows which bucket files your notes use, and a backup zips the vault. Paths and notes never leave the device; only the files you move, upload or back up go to your bucket.
+- **Clipboard:** the plugin writes a link to it when you copy one, publish a note or copy a backup's link, and when an upload finishes after its placeholder was deleted. It reads it once when you open **Add from Aktar app**, to fill in a transfer link if there is one; anything else there is ignored. Pasted files come through Obsidian's paste event, like any paste.
+
+The release files are built by GitHub Actions from the tagged commit and signed with an [artifact attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations): `gh attestation verify main.js -R getaktar/obsidian`.
+
 ## Development
 
 ```bash

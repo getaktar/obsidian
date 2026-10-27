@@ -47,9 +47,9 @@ export class RemoteMediaRenderer {
     this.refresh();
     this.observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) this.handle(mutation.target);
+        if (mutation.type === 'attributes' && mutation.target.instanceOf(HTMLElement)) this.handle(mutation.target);
         for (const node of Array.from(mutation.addedNodes)) {
-          if (!(node instanceof HTMLElement)) continue;
+          if (!node.instanceOf(HTMLElement)) continue;
           this.handle(node);
           node.querySelectorAll<HTMLElement>('img, video, audio, source').forEach((element) => this.handle(element));
         }
@@ -110,7 +110,7 @@ export class RemoteMediaRenderer {
   }
 
   private handle(element: HTMLElement): void {
-    if (!(element instanceof HTMLImageElement || element instanceof HTMLMediaElement || element instanceof HTMLSourceElement)) return;
+    if (!(element.instanceOf(HTMLImageElement) || element.instanceOf(HTMLMediaElement) || element.instanceOf(HTMLSourceElement))) return;
     const src = element.getAttribute('src');
     if (!src || src.startsWith('data:') || src.startsWith('app:')) return;
     if (this.produced.has(src)) {
@@ -210,7 +210,7 @@ export class RemoteMediaRenderer {
       document.querySelectorAll<HTMLElement>(`[${ORIGINAL}]`).forEach((element) => {
         const original = element.getAttribute(ORIGINAL) ?? '';
         const hit = matchRemoteURL(original, this.matchers);
-        if (hit && `${hit.destinationId}/${hit.key}` === item.id && element instanceof HTMLImageElement) element.setAttribute('src', blobURL);
+        if (hit && `${hit.destinationId}/${hit.key}` === item.id && element.instanceOf(HTMLImageElement)) element.setAttribute('src', blobURL);
       });
     } catch {
       // Offline or refused: it's fetched again next time it's shown.

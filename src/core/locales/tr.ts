@@ -334,7 +334,7 @@ export const TR: Record<string, string> = {
   "Keep": "Sakla",
   "The newest {0}": "En yeni {0} tane",
   "Include settings and plugins": "Ayarları ve eklentileri de ekle",
-  "The .obsidian folder. Other plugins may keep passwords or keys in their settings, so this is off unless you turn it on.": ".obsidian klasörü. Başka eklentiler ayarlarında parola ya da anahtar tutuyor olabilir, bu yüzden sen açmadıkça kapalıdır.",
+  "The {0} folder. Other plugins may keep passwords or keys in their settings, so this is off unless you turn it on.": "{0} klasörü. Başka eklentiler ayarlarında parola ya da anahtar tutuyor olabilir, bu yüzden sen açmadıkça kapalıdır.",
   "Back up now": "Şimdi yedekle",
   "Last backup from this device: {0}, {1}.": "Bu cihazdan son yedek: {0}, {1}.",
   "No backup from this device yet.": "Bu cihazdan henüz yedek alınmadı.",

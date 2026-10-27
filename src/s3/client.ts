@@ -54,7 +54,7 @@ function headerValue(headers: Record<string, string>, name: string): string | un
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
 /**
@@ -108,9 +108,9 @@ export class S3Client implements Storage {
       this.credentials,
       this.config.region,
     );
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: number | undefined;
     const timeout = new Promise<never>((_, reject) => {
-      timer = setTimeout(
+      timer = window.setTimeout(
         () => reject(new StorageError({ kind: 'network', message: t('The storage provider didn’t answer in time.') })),
         options.timeoutMs ?? REQUEST_TIMEOUT_MS,
       );
@@ -122,7 +122,7 @@ export class S3Client implements Storage {
       // requestUrl rejects only when no HTTP answer came back at all.
       throw new StorageError({ kind: 'network', message: error instanceof Error ? error.message : String(error) });
     } finally {
-      clearTimeout(timer);
+      window.clearTimeout(timer);
     }
   }
 
@@ -146,7 +146,7 @@ export class S3Client implements Storage {
       if (head.status === 404) throw new StorageError({ kind: 'bucketNotFound', bucket: this.config.bucket });
       this.fail(head);
     }
-    const testKey = `_aktar_test_${globalThis.crypto.randomUUID().slice(0, 8).toUpperCase()}.txt`;
+    const testKey = `_aktar_test_${crypto.randomUUID().slice(0, 8).toUpperCase()}.txt`;
     let writable = false;
     try {
       const put = await this.send('PUT', { key: testKey, body: 'aktar connection test', headers: { 'Content-Type': 'text/plain' } });

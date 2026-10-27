@@ -9,6 +9,10 @@ on:
 
 permissions:
   contents: write
+  # Signing the build provenance of the release files (actions/attest).
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   release:
@@ -29,6 +33,15 @@ jobs:
         run: test "$(node -p "require('./manifest.json').version")" = "${GITHUB_REF_NAME}"
 
       - run: pnpm check
+
+      # Lets anyone check that the files were built here, from this tag:
+      # gh attestation verify main.js -R getaktar/obsidian
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
 
       - name: Create the release
         env:
