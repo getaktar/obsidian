@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3
+
+### Changed
+
+- **Settings in Obsidian's search:** from Obsidian 1.13 on, Aktar's settings are found by settings search. Older versions keep the same settings tab, so the plugin still works from 1.11.4.
+- Buttons that remove something use Obsidian 1.13's destructive style.
+- Destinations added from the command palette show up in an open settings tab right away.
+
 ## 0.2.2
 
 ### Changed
