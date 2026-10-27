@@ -1,0 +1,283 @@
+/* Aktar for Obsidian. Colors and spacing come from Obsidian's own variables, so every theme applies. */
+
+.aktar-muted {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.aktar-error {
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+  min-height: 1.2em;
+}
+
+.aktar-error.aktar-ok {
+  color: var(--text-success);
+}
+
+.aktar-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-1);
+  color: var(--text-warning);
+}
+
+.aktar-warning svg {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+}
+
+.aktar-badge {
+  display: inline-block;
+  margin-inline-start: var(--size-4-2);
+  padding: 0 var(--size-4-2);
+  border-radius: var(--radius-s);
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  vertical-align: middle;
+}
+
+.aktar-badge-muted {
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.aktar-hidden {
+  display: none !important;
+}
+
+/* Settings */
+
+.aktar-settings .aktar-wide-input {
+  width: 100%;
+  min-width: 18em;
+  font-family: var(--font-monospace);
+}
+
+.aktar-variables {
+  margin: 0 0 var(--size-4-4);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.aktar-variables summary {
+  cursor: var(--cursor);
+}
+
+.aktar-variable {
+  display: flex;
+  gap: var(--size-4-3);
+  padding: var(--size-2-1) 0;
+}
+
+.aktar-variable code {
+  min-width: 15em;
+}
+
+/* Modals */
+
+.aktar-modal .aktar-steps {
+  padding-inline-start: 1.2em;
+  color: var(--text-muted);
+}
+
+.aktar-modal .aktar-link-input {
+  width: 100%;
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+}
+
+.aktar-modal .aktar-code-input {
+  font-family: var(--font-monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aktar-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
+  gap: var(--size-4-3);
+  margin: var(--size-4-2) 0 var(--size-4-4);
+}
+
+.aktar-stat {
+  padding: var(--size-4-3);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+
+.aktar-stat-value {
+  font-size: var(--font-ui-large);
+  font-weight: var(--font-semibold);
+  overflow-wrap: anywhere;
+}
+
+.aktar-stat-label {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.aktar-plan-list {
+  max-height: 12em;
+  overflow-y: auto;
+  font-size: var(--font-ui-small);
+  overflow-wrap: anywhere;
+}
+
+.aktar-skipped {
+  margin: var(--size-4-2) 0;
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+}
+
+.aktar-progress {
+  width: 100%;
+}
+
+/* Library */
+
+.aktar-library {
+  padding: var(--size-4-2) var(--size-4-3);
+}
+
+.aktar-tabs {
+  display: flex;
+  gap: var(--size-4-1);
+  margin-bottom: var(--size-4-3);
+}
+
+.aktar-tab {
+  flex: 1;
+  font-size: var(--font-ui-small);
+}
+
+.aktar-tab.is-active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.aktar-tab-failed:not(.is-active) {
+  color: var(--text-error);
+}
+
+.aktar-search {
+  width: 100%;
+  margin-bottom: var(--size-4-2);
+}
+
+.aktar-count {
+  margin-bottom: var(--size-4-2);
+}
+
+.aktar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-3);
+  padding: var(--size-4-1) var(--size-4-1);
+  border-radius: var(--radius-s);
+}
+
+.aktar-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.aktar-row.is-clickable {
+  cursor: var(--cursor);
+}
+
+.aktar-thumb {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+}
+
+.aktar-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aktar-row-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.aktar-row-name,
+.aktar-row-detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aktar-row-name {
+  font-size: var(--font-ui-small);
+}
+
+.aktar-row-detail {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.aktar-row-more {
+  flex-shrink: 0;
+}
+
+.aktar-bucket-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  margin-bottom: var(--size-4-2);
+}
+
+.aktar-crumbs {
+  font-size: var(--font-ui-small);
+  overflow-wrap: anywhere;
+}
+
+.aktar-crumb {
+  cursor: var(--cursor);
+  color: var(--text-accent);
+}
+
+.aktar-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4-2);
+  margin-bottom: var(--size-4-3);
+}
+
+.aktar-load-more {
+  width: 100%;
+  margin-top: var(--size-4-2);
+}
+
+.aktar-empty {
+  padding: var(--size-4-8) var(--size-4-4);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.aktar-empty-icon svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+
+/* Notes */
+
+.aktar-player {
+  max-width: 100%;
+}
+
+.aktar-status-failed {
+  color: var(--text-error);
+}

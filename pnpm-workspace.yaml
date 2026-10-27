@@ -1,0 +1,4 @@
+# Dependency lifecycle scripts pnpm is allowed to run (pnpm 11 and later
+# fail a CI install on unapproved ones). esbuild's only fetches its binary.
+allowBuilds:
+  esbuild: true
