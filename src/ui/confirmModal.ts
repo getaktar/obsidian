@@ -1,4 +1,4 @@
-import { Modal, Setting, type App } from 'obsidian';
+import { Modal, requireApiVersion, Setting, type App, type ButtonComponent } from 'obsidian';
 
 import { t } from '../core/i18n.ts';
 
@@ -30,7 +30,7 @@ export class ConfirmModal extends Modal {
           await this.options.onConfirm();
           this.close();
         });
-        if (this.options.danger) button.setWarning();
+        if (this.options.danger) setDestructive(button, true);
         else button.setCta();
       });
   }
@@ -38,4 +38,13 @@ export class ConfirmModal extends Modal {
   onClose(): void {
     this.contentEl.empty();
   }
+}
+
+/**
+ * Styles a button for something hard to undo, the way this Obsidian
+ * version does; `primary` also makes it the main action from 1.13 on.
+ */
+export function setDestructive(button: ButtonComponent, primary = false): ButtonComponent {
+  if (requireApiVersion('1.13.0')) return primary ? button.setDestructive().setCta() : button.setDestructive();
+  return button.setClass('mod-warning');
 }

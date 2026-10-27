@@ -6,6 +6,7 @@ import { makeShortCode } from '../core/shortKeys.ts';
 import { errorMessage, type DestinationConfig } from '../core/types.ts';
 import type AktarPlugin from '../main.ts';
 import type { Storage } from '../storage.ts';
+import { setDestructive } from '../ui/confirmModal.ts';
 import { pageHTML } from './publishTemplate.ts';
 
 /** The note property that remembers where a note was published, so publishing again updates the same page. */
@@ -196,8 +197,7 @@ export class PublishModal extends Modal {
     const buttons = new Setting(contentEl);
     if (again) {
       buttons.addButton((button) =>
-        button
-          .setWarning()
+        setDestructive(button)
           .setButtonText(t('Take down'))
           .onClick(async () => {
             await unpublishNote(this.plugin, this.note);

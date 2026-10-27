@@ -55,6 +55,7 @@ export default class AktarPlugin extends Plugin {
   usage!: UsageIndex;
   bridge!: AppBridge;
   backup!: VaultBackup;
+  settingsTab!: AktarSettingTab;
   autoMover: AutoMover | null = null;
   deviceId = '';
   private statusBar: HTMLElement | null = null;
@@ -72,7 +73,8 @@ export default class AktarPlugin extends Plugin {
     this.backup = new VaultBackup(this);
 
     this.registerView(LIBRARY_VIEW, (leaf) => new LibraryView(leaf, this));
-    this.addSettingTab(new AktarSettingTab(this.app, this));
+    this.settingsTab = new AktarSettingTab(this.app, this);
+    this.addSettingTab(this.settingsTab);
     this.addRibbonIcon('cloud-upload', t('Aktar library'), () => void this.openLibrary());
 
     registerPasteAndDrop(this);
@@ -192,6 +194,7 @@ export default class AktarPlugin extends Plugin {
     if (!this.destination(this.settings.defaultDestinationId)) this.settings.defaultDestinationId = destination.id;
     if (credentials) this.credentials.set(destination.id, credentials);
     await this.saveSettings();
+    this.settingsTab.refresh();
   }
 
   async removeDestination(id: string): Promise<void> {
@@ -199,6 +202,7 @@ export default class AktarPlugin extends Plugin {
     this.credentials.remove(id);
     if (this.settings.defaultDestinationId === id) this.settings.defaultDestinationId = this.settings.destinations[0]?.id ?? null;
     await this.saveSettings();
+    this.settingsTab.refresh();
   }
 
   // MARK: Uploading
