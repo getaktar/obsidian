@@ -1,7 +1,7 @@
 {
   "id": "aktar",
   "name": "Aktar",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "minAppVersion": "1.11.4",
   "description": "Keep attachments in your own S3, Cloudflare R2 or Backblaze B2 bucket. Paste, drop or move files and get links that work on every device.",
   "author": "Mert Topuz",
