@@ -163,6 +163,66 @@ export function resolveContentType(filename: string, fallback?: string | null): 
   return mimeTypeForExtension(pathExtension(filename)) ?? (fallback || 'application/octet-stream');
 }
 
+/**
+ * Text that goes up with `; charset=utf-8` when its bytes are valid UTF-8,
+ * so a browser shows "ğüşiöç" right instead of guessing another encoding.
+ * Bigger files aren't checked. History keeps the bare type.
+ */
+const CHARSET_TYPES = new Set(['text/plain', 'text/markdown', 'text/csv']);
+export const MAX_CHARSET_CHECK_BYTES = 16 * 1024 * 1024;
+
+export function wantsCharset(contentType: string): boolean {
+  return CHARSET_TYPES.has(contentType.split(';')[0].trim().toLowerCase()) && !/;\s*charset=/i.test(contentType);
+}
+
+export function withUTF8Charset(contentType: string): string {
+  return `${contentType}; charset=utf-8`;
+}
+
+/** The type without parameters such as charset, for history. */
+export function bareContentType(contentType: string): string {
+  return contentType.split(';')[0].trim();
+}
+
+/** Whether `bytes` are well-formed UTF-8 (no overlongs, surrogates or code points past U+10FFFF). */
+export function isValidUTF8(bytes: Uint8Array): boolean {
+  let i = 0;
+  const n = bytes.length;
+  while (i < n) {
+    const byte = bytes[i];
+    if (byte < 0x80) {
+      i++;
+      continue;
+    }
+    let need: number;
+    let min: number;
+    let code: number;
+    if (byte >= 0xc2 && byte <= 0xdf) {
+      need = 1;
+      min = 0x80;
+      code = byte & 0x1f;
+    } else if (byte >= 0xe0 && byte <= 0xef) {
+      need = 2;
+      min = 0x800;
+      code = byte & 0x0f;
+    } else if (byte >= 0xf0 && byte <= 0xf4) {
+      need = 3;
+      min = 0x10000;
+      code = byte & 0x07;
+    } else {
+      return false;
+    }
+    for (let k = 1; k <= need; k++) {
+      const next = bytes[i + k];
+      if (next === undefined || (next & 0xc0) !== 0x80) return false;
+      code = (code << 6) | (next & 0x3f);
+    }
+    if (code < min || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) return false;
+    i += need + 1;
+  }
+  return true;
+}
+
 export function isImageFilename(filename: string): boolean {
   return mimeTypeForExtension(pathExtension(filename))?.startsWith('image/') ?? false;
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+
+### Fixed
+
+- Text attachments (`.txt`, `.md`, `.csv`) are uploaded as UTF-8, so a browser shows accented and non-Latin characters correctly instead of guessing another encoding. The same as the Aktar apps.
+
 ## 0.2.3
 
 ### Changed

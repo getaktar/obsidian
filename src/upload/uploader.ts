@@ -1,4 +1,4 @@
-import { isImageFilename, resolveContentType } from '../core/contentType.ts';
+import { isImageFilename, isValidUTF8, MAX_CHARSET_CHECK_BYTES, resolveContentType, wantsCharset, withUTF8Charset } from '../core/contentType.ts';
 import { stripLocation } from '../core/exif.ts';
 import { generateObjectKey, type VaultContext } from '../core/objectKey.ts';
 import { makeShortCode, usesConditionalWrites, usesShortCode, writeShortKey } from '../core/shortKeys.ts';
@@ -90,7 +90,10 @@ export async function uploadFile(request: UploadRequest): Promise<UploadOutcome>
       locationRemoved = stripped.removed;
     }
   }
-  const contentType = resolveContentType(filename);
+  // Text is sent as UTF-8 when it is, so a browser doesn't guess another encoding (like the apps).
+  const bareType = resolveContentType(filename);
+  const contentType =
+    wantsCharset(bareType) && data.byteLength <= MAX_CHARSET_CHECK_BYTES && isValidUTF8(new Uint8Array(data)) ? withUTF8Charset(bareType) : bareType;
   const options = { date: request.date, vault: request.vault, sha256: originalHash };
   const firstKey = request.stable
     ? generateObjectKey(template, filename, options)

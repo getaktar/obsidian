@@ -153,6 +153,15 @@ test('uploader: vault template, stable keys reuse the object, collisions get a n
   assert.equal(two.key, 'named/same 2.txt');
 });
 
+test('text files are served as UTF-8', { skip: !hasMinio }, async () => {
+  const vault = { vault: 'V', note: 'n', noteFolder: '' };
+  const data = new TextEncoder().encode('Çağrı notları\n').buffer as ArrayBuffer;
+  const outcome = await uploadFile({ data, filename: 'notes.md', destination, client, template: 'text/{filename}.{ext}', vault, removeLocation: true });
+  const response = await fetch(await client.temporaryLink(outcome.key, 60));
+  assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+  assert.equal(await response.text(), 'Çağrı notları\n');
+});
+
 test('errors map to what the user can act on', { skip: !hasMinio }, async () => {
   const wrongKeys = new S3Client(destination, { accessKeyId: 'minioadmin', secretAccessKey: 'wrong-secret' }, fetchHttp);
   await assert.rejects(wrongKeys.list(''), (error: Error & { detail?: { kind: string } }) => error.detail?.kind === 'invalidCredentials');

@@ -136,7 +136,13 @@ export function signRequest(
   return headers;
 }
 
-/** A query-string signed (presigned) URL, valid for `expiresIn` seconds. */
+/**
+ * A query-string signed (presigned) URL, valid for `expiresIn` seconds.
+ * `signedHeaders` are signed along with `host` (lowercase names), so the
+ * request has to send exactly those: a file request's slots sign
+ * `content-type` and, where the provider has conditional writes,
+ * `if-none-match`.
+ */
 export function presignUrl(
   request: { method: string; scheme: string; host: string; path: string },
   credentials: SigningCredentials,
@@ -144,15 +150,19 @@ export function presignUrl(
   expiresIn: number,
   date: Date = new Date(),
   service = 's3',
+  signedHeaders: Record<string, string> = {},
 ): string {
   const { stamp, day } = amzDate(date);
   const scope = `${day}/${region}/${service}/aws4_request`;
+  const headers: Record<string, string> = { host: request.host };
+  for (const [name, value] of Object.entries(signedHeaders)) headers[name.toLowerCase()] = value.trim().replace(/\s+/g, ' ');
+  const names = Object.keys(headers).sort();
   const query: [string, string][] = [
     ['X-Amz-Algorithm', 'AWS4-HMAC-SHA256'],
     ['X-Amz-Credential', `${credentials.accessKeyId}/${scope}`],
     ['X-Amz-Date', stamp],
     ['X-Amz-Expires', String(expiresIn)],
-    ['X-Amz-SignedHeaders', 'host'],
+    ['X-Amz-SignedHeaders', names.join(';')],
   ];
   if (credentials.sessionToken) query.push(['X-Amz-Security-Token', credentials.sessionToken]);
 
@@ -160,8 +170,8 @@ export function presignUrl(
     request.method,
     request.path,
     canonicalQuery(query),
-    `host:${request.host}\n`,
-    'host',
+    names.map((n) => `${n}:${headers[n]}\n`).join(''),
+    names.join(';'),
     UNSIGNED_PAYLOAD,
   ].join('\n');
   const stringToSign = ['AWS4-HMAC-SHA256', stamp, scope, sha256Hex(canonicalRequest)].join('\n');
